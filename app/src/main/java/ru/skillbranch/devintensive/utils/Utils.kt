@@ -16,6 +16,9 @@ object Utils {
     }
 
     fun transliteration(s: String, divider: String = " "): String {
+        s.trim()
+        var result : String
+
         return "nick"
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
