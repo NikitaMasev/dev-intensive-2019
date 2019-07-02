@@ -1,7 +1,7 @@
 package ru.skillbranch.devintensive.utils
 
 object Utils {
-    //TODO
+
     fun parseFullName(fullName: String?): Pair<String?, String?> {
         val parts: List<String>? = fullName?.trim()?.split(" ")
 
@@ -15,13 +15,68 @@ object Utils {
         }
     }
 
-    fun transliteration(s: String, divider: String = " "): String {
-        s.trim()
-        var result : String
+    fun transliteration(source: String, divider: String = " "): String {
+        source.trim()
+        var result = ""
 
-        return "nick"
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        for (currentSymbol in source) {
+            result += if (currentSymbol.toString() == " ") divider else translateToEng(currentSymbol)
+        }
+
+        return result
     }
+
+    private fun translateToEng(currentSymbol: Char): String {
+        val rusToEng = hashMapOf(
+            "а" to "a",
+            "б" to "b",
+            "в" to "v",
+            "г" to "g",
+            "д" to "d",
+            "е" to "e",
+            "ё" to "e",
+            "ж" to "zh",
+            "з" to "z",
+            "и" to "i",
+            "й" to "i",
+            "к" to "k",
+            "л" to "l",
+            "м" to "m",
+            "н" to "n",
+            "о" to "o",
+            "п" to "p",
+            "р" to "r",
+            "с" to "s",
+            "т" to "t",
+            "у" to "u",
+            "ф" to "f",
+            "х" to "h",
+            "ц" to "c",
+            "ч" to "ch",
+            "ш" to "sh",
+            "щ" to "sh'",
+            "ъ" to "",
+            "ы" to "i",
+            "ь" to "",
+            "э" to "e",
+            "ю" to "yu",
+            "я" to "ya"
+        )
+
+        return when {
+            currentSymbol.isLowerCase() -> rusToEng.getOrElse(currentSymbol.toString()) { currentSymbol.toString() }
+            currentSymbol.isUpperCase() -> {
+                val eng = rusToEng.getOrElse(currentSymbol.toString().toLowerCase()) { currentSymbol.toString() }
+                    .toUpperCase()
+                return if (eng.length > 1)
+                    eng.toCharArray()[0] + eng.toCharArray()[1].toLowerCase().toString()
+                else
+                    eng
+            }
+            else -> ""
+        }
+    }
+
 
     fun toInitials(firstName: String?, lastName: String?): String? {
         val copyFirstName = firstName?.trim()
