@@ -1,5 +1,9 @@
 package ru.skillbranch.devintensive.utils
 
+import ru.skillbranch.devintensive.extensions.format
+import ru.skillbranch.devintensive.extensions.humanizeDiff
+import java.util.*
+
 object Utils {
 
     fun parseFullName(fullName: String?): Pair<String?, String?> {
@@ -91,5 +95,9 @@ object Utils {
             copyLastName.isNullOrEmpty() -> copyFirstName?.get(0).toString().toUpperCase()
             else -> "${copyFirstName[0].toUpperCase()}${copyLastName[0].toUpperCase()}"
         }
+    }
+
+    fun getDifferNumberDate(currentDate: Date, date: Date, pattern: String) : Int {
+        return currentDate.format(pattern).toInt() - date.format(pattern).toInt()
     }
 }

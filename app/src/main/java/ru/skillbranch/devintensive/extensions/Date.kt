@@ -1,6 +1,6 @@
 package ru.skillbranch.devintensive.extensions
 
-import java.lang.IllegalStateException
+import ru.skillbranch.devintensive.utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +36,16 @@ enum class TimeUnits {
 }
 
 fun Date.humanizeDiff(date:Date = Date()): String {
-    return "differ"
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val differYears = Utils.getDifferNumberDate(date,this,"yyyy")
+    val differDays = Utils.getDifferNumberDate(date,this,"dd")
+    val differHours = Utils.getDifferNumberDate(date,this,"HH")
+    val differMinutes = Utils.getDifferNumberDate(date,this,"mm")
+    val differSeconds = Utils.getDifferNumberDate(date,this,"ss")
+
+    return when {
+        differYears > 0 -> "более года назад"
+        differDays > 0 -> "$differDays дней назад"
+        else -> "hui"
+    }
+
 }
