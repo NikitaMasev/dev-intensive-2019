@@ -35,6 +35,51 @@ enum class TimeUnits {
     DAY
 }
 
+fun TimeUnits.plural(value: Int): String {
+    return when (this) {
+        TimeUnits.SECOND -> pluralSeconds(value)
+        TimeUnits.MINUTE -> pluralMinutes(value)
+        TimeUnits.HOUR ->  pluralHours(value)
+        else -> pluralDays(value)
+    }
+}
+
+private fun pluralDays(value: Int): String {
+    return when {
+        isSpecialDiapason(value.toLong()) -> "$value дней"
+        isTwoToFourDiapason(value.toLong()) -> "$value дня"
+        isOne(value.toLong()) -> "$value день"
+        else -> "$value дней"
+    }
+}
+
+private fun pluralHours(value: Int): String {
+    return when {
+        isSpecialDiapason(value.toLong()) -> "$value часов"
+        isTwoToFourDiapason(value.toLong()) -> "$value часа"
+        isOne(value.toLong()) -> "$value час"
+        else -> "$value часов"
+    }
+}
+
+private fun pluralMinutes(value: Int): String {
+    return when {
+        isSpecialDiapason(value.toLong()) -> "$value минут"
+        isTwoToFourDiapason(value.toLong()) -> "$value минуты"
+        isOne(value.toLong()) -> "$value минуту"
+        else -> "$value минут"
+    }
+}
+
+private fun pluralSeconds(value: Int): String {
+    return when {
+        isSpecialDiapason(value.toLong()) -> "$value секунд"
+        isTwoToFourDiapason(value.toLong()) -> "$value секунды"
+        isOne(value.toLong()) -> "$value секунду"
+        else -> "$value секунд"
+    }
+}
+
 fun Date.humanizeDiff(date: Date = Date()): String {
     val differ = date.time - this.time
 
