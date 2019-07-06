@@ -32,17 +32,26 @@ enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+
+    fun plural(value: Int): String {
+        return when (this) {
+            SECOND -> pluralSeconds(value)
+            MINUTE -> pluralMinutes(value)
+            HOUR -> pluralHours(value)
+            else -> pluralDays(value)
+        }
+    }
 }
 
-fun TimeUnits.plural(value: Int): String {
+/*fun TimeUnits.plural(value: Int): String {
     return when (this) {
         TimeUnits.SECOND -> pluralSeconds(value)
         TimeUnits.MINUTE -> pluralMinutes(value)
         TimeUnits.HOUR ->  pluralHours(value)
         else -> pluralDays(value)
     }
-}
+}*/
 
 private fun pluralDays(value: Int): String {
     return when {
