@@ -97,6 +97,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
     override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
         return when (p1) {
             EditorInfo.IME_ACTION_DONE -> {
+                hideKeyboard()
                 updateBender()
                 return true
             }
@@ -105,12 +106,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
     }
 
     private fun updateBender() {
-        val (phrase, color) = benderObj.listenAnswer(messageEt.text.toString().toLowerCase())
-        messageEt.setText("")
+        val answer = messageEt.text.toString()
 
-        val (r, g, b) = color
-        benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
+        if(answer.trim().isEmpty()) {
+            messageEt.setText("")
+            return
+        }
 
-        textTxt.text = phrase
+        val validationAnswer = benderObj.validation(answer)
+
+        if (validationAnswer.isEmpty()) {
+            val (phrase, color) = benderObj.listenAnswer(answer.toLowerCase())
+            messageEt.setText("")
+
+            val (r, g, b) = color
+            benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
+
+            textTxt.text = phrase
+        } else {
+            messageEt.setText("")
+            textTxt.text = validationAnswer
+        }
     }
 }

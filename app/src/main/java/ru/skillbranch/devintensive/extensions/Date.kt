@@ -44,15 +44,6 @@ enum class TimeUnits {
     }
 }
 
-/*fun TimeUnits.plural(value: Int): String {
-    return when (this) {
-        TimeUnits.SECOND -> pluralSeconds(value)
-        TimeUnits.MINUTE -> pluralMinutes(value)
-        TimeUnits.HOUR ->  pluralHours(value)
-        else -> pluralDays(value)
-    }
-}*/
-
 private fun pluralDays(value: Int): String {
     return when {
         isSpecialDiapason(value.toLong()) -> "$value дней"

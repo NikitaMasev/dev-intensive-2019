@@ -25,6 +25,19 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         question = Question.NAME
     }
 
+    fun validation(answer: String): String {
+        val trimmed = answer.trim()
+
+        return when (question) {
+            Question.NAME -> if (trimmed[0].isLowerCase()) "Имя должно начинаться с заглавной буквы\n${Question.NAME.question}" else ""
+            Question.PROFESSION -> if (trimmed[0].isUpperCase()) "Профессия должна начинаться со строчной буквы\n${Question.PROFESSION.question}" else ""
+            Question.MATERIAL -> if (!"^[a-zA-Zа-яА-Я]+".toRegex().matches(trimmed)) "Материал не должен содержать цифр\n${Question.MATERIAL.question}" else ""
+            Question.BDAY -> if (!"^[0-9]+".toRegex().matches(trimmed)) "Год моего рождения должен содержать только цифры\n${Question.BDAY.question}" else ""
+            Question.SERIAL -> if (!"^[0-9]{7}+".toRegex().matches(trimmed)) "Серийный номер содержит только цифры, и их 7\n${Question.SERIAL.question}" else ""
+            else -> ""
+        }
+    }
+
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
         return if (question.answer.contains(answer)) {
             question = question.nextQuestion()
