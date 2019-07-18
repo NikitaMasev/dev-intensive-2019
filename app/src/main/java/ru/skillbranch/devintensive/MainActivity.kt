@@ -10,14 +10,17 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.skillbranch.devintensive.extensions.hideKeyboard
+import ru.skillbranch.devintensive.extensions.isKeyboardOpen
 import ru.skillbranch.devintensive.models.Bender
 
 class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener {
 
+    private lateinit var llRootView : LinearLayout
     private lateinit var sendBtn: ImageView
     private lateinit var messageEt: EditText
     private lateinit var textTxt: TextView
@@ -33,6 +36,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         textTxt = tv_text
         messageEt = et_message
         sendBtn = iv_send
+        llRootView = ll_root
 
         val status = savedInstanceState?.getString("STATUS") ?: Bender.Status.NORMAL.name
         val question = savedInstanceState?.getString("QUESTION") ?: Bender.Question.NAME.name
@@ -88,6 +92,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
     }
 
     override fun onClick(v: View?) {
+        if (isKeyboardOpen(llRootView)) {
+            Log.d("MainActivity","OPEN")
+        } else {
+            Log.d("MainActivity","CLOSED")
+        }
         hideKeyboard()
         if (v?.id == R.id.iv_send) {
             updateBender()
