@@ -92,11 +92,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
     }
 
     override fun onClick(v: View?) {
-        if (isKeyboardOpen(llRootView)) {
+        if (isKeyboardOpen()) {
             Log.d("MainActivity","OPEN")
         } else {
             Log.d("MainActivity","CLOSED")
         }
+
         hideKeyboard()
         if (v?.id == R.id.iv_send) {
             updateBender()

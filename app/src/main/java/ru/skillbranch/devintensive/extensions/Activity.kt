@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import android.graphics.Rect
-import android.view.ViewGroup
-
-
+import android.view.View
 
 
 fun Activity.hideKeyboard() {
@@ -14,13 +12,14 @@ fun Activity.hideKeyboard() {
     imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 }
 
-fun Activity.isKeyboardOpen(vg : ViewGroup): Boolean {
+fun Activity.isKeyboardOpen(): Boolean {
+    val view = findViewById<View>(android.R.id.content)
     val rect = Rect()
-    vg.getWindowVisibleDisplayFrame(rect)
-    val heightDiff = vg.rootView.height - (rect.bottom - rect.top)
+    view.getWindowVisibleDisplayFrame(rect)
+    val heightDiff = view.rootView.height - (rect.bottom - rect.top)
 
     return heightDiff > 300
 }
 
-fun Activity.isKeyboardClosed(vg : ViewGroup) = !isKeyboardOpen(vg)
+fun Activity.isKeyboardClosed() = !isKeyboardOpen()
 
