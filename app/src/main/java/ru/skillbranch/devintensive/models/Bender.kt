@@ -2,7 +2,7 @@ package ru.skillbranch.devintensive.models
 
 class Bender(var status: Status = Status.NORMAL, var question: Question = Question.NAME) {
 
-    private val MAX_COUNT_QUESTION_ERR = 3
+    private val MAX_COUNT_QUESTION_ERR = 2
     private var currentCountErr = 0
 
     fun askQuestion(): String = when (question) {
@@ -40,7 +40,6 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
     fun listenAnswer(answer: String): Pair<String, Triple<Int, Int, Int>> {
         if (question == Question.IDLE) {
-            currentCountErr = 0
             return "Отлично - ты справился\n${question.question}" to status.color
         }
 
@@ -49,13 +48,13 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
             "Отлично - ты справился\n${question.question}" to status.color
         } else {
-            currentCountErr++
-
-            return if (currentCountErr >= MAX_COUNT_QUESTION_ERR) {
+            return if (currentCountErr == MAX_COUNT_QUESTION_ERR) {
+                currentCountErr = 0
                 setDefaultConfig()
 
                 "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
             } else {
+                currentCountErr++
                 status = status.nextStatus()
 
                 "Это неправильный ответ\n${question.question}" to status.color
