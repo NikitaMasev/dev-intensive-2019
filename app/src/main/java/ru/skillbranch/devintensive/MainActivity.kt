@@ -79,17 +79,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
 
     override fun onDestroy() {
         super.onDestroy()
+
         Log.d("MainActivity", "onDestroy")
     }
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
-
+    override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putString("STATUS", benderObj.status.name)
         outState?.putString("QUESTION", benderObj.question.name)
 
         Log.d("MainActivity", "onSaveInstanceState ${benderObj.status.name} ${benderObj.question.name}")
+        super.onSaveInstanceState(outState)
     }
+
 
     override fun onClick(v: View?) {
         if (isKeyboardOpen()) {
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdito
         val validationAnswer = benderObj.validation(answer)
 
         if (validationAnswer.isEmpty()) {
-            val (phrase, color) = benderObj.listenAnswer(answer.toLowerCase())
+            val (phrase, color) = benderObj.listenAnswer(answer.trim().toLowerCase())
             messageEt.setText("")
 
             val (r, g, b) = color
