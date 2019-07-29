@@ -247,6 +247,7 @@
 		/>
 
 		<com.google.android.material.textfield.TextInputLayout
+				android:id="@+id/wr_repository"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginLeft="@dimen/spacing_normal_16"
