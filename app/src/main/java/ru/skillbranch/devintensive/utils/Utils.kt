@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.utils
 
+import android.content.res.Resources
+import androidx.annotation.Px
 import ru.skillbranch.devintensive.extensions.format
 import ru.skillbranch.devintensive.extensions.humanizeDiff
 import java.util.*
@@ -97,7 +99,12 @@ object Utils {
         }
     }
 
-    fun getDifferNumberDate(currentDate: Date, date: Date, pattern: String) : Int {
+    fun getDifferNumberDate(currentDate: Date, date: Date, pattern: String): Int {
         return currentDate.format(pattern).toInt() - date.format(pattern).toInt()
     }
+
+    fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
+
+    fun pxToDp(px: Int) = (px / Resources.getSystem().displayMetrics.density).toInt()
+
 }
