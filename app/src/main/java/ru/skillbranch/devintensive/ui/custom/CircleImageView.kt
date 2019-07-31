@@ -94,6 +94,7 @@ class CircleImageView @JvmOverloads constructor(
         isModeAvatarText = true
 
         val background = getBackgroundAvatar()
+        setImageBitmap(background)
         bitmap = getAvatar(background)
         invalidate()
     }
