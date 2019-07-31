@@ -105,6 +105,8 @@ object Utils {
 
     fun dpToPx(dp: Int) = (dp * Resources.getSystem().displayMetrics.density).toInt()
 
+    fun spToPx(sp: Int) = (sp * Resources.getSystem().displayMetrics.scaledDensity).toInt()
+
     fun pxToDp(px: Int) = (px / Resources.getSystem().displayMetrics.density).toInt()
 
 }

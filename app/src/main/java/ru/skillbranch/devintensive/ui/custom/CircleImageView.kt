@@ -3,6 +3,7 @@ package ru.skillbranch.devintensive.ui.custom
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.widget.ImageView
 import androidx.annotation.ColorRes
 import ru.skillbranch.devintensive.R
@@ -15,18 +16,28 @@ class CircleImageView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ImageView(context, attrs, defStyleAttr) {
 
+    private val DEFAULT_TEXT_COLOR = Color.WHITE
+    private val DEFAULT_TEXT_SIZE = 40
     private val DEFAULT_BORDER_COLOR = Color.WHITE
     private val DEFAULT_BORDER_WIDTH = 2
 
     private var borderColor = DEFAULT_BORDER_COLOR
     private var borderWidth = Utils.dpToPx(DEFAULT_BORDER_WIDTH)
+    private var textColor = DEFAULT_TEXT_COLOR
+    private var textSize = Utils.spToPx(DEFAULT_TEXT_SIZE)
 
-    private var initials: String? = null
+    private var text: String? = null
 
     private var bitmap: Bitmap? = null
+
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     private val borderCircle = RectF()
+    private val textBounds = Rect()
+
+    private var isModeAvatarText = false
 
     init {
         if (attrs != null) {
@@ -39,6 +50,9 @@ class CircleImageView @JvmOverloads constructor(
         borderPaint.color = borderColor
         borderPaint.style = Paint.Style.STROKE
         borderPaint.strokeWidth = borderWidth.toFloat()
+
+        textPaint.textAlign = Paint.Align.CENTER
+
     }
 
     fun getBorderWidth(): Int = Utils.pxToDp(borderWidth)
@@ -60,8 +74,66 @@ class CircleImageView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun setTextColor(@ColorRes colorId: Int) {
+        textColor = context.getColor(colorId)
+        invalidate()
+    }
+
+    fun setTextSize(sp: Int) {
+        textSize = Utils.spToPx(sp)
+        invalidate()
+    }
+
+    fun setText(text: String) {
+        this.text = text
+        invalidate()
+    }
+
+    fun enableAvatarText() {
+        text ?: return
+        isModeAvatarText = true
+
+        val background = getBackgroundAvatar()
+        bitmap = getAvatar(background)
+        invalidate()
+    }
+
+    fun disableAvatarText() {
+        isModeAvatarText = false
+    }
+
+    private fun getAvatar(background: Bitmap): Bitmap {
+        textPaint.textSize = textSize.toFloat()
+        textPaint.color = textColor
+        textPaint.getTextBounds(text, 0, text!!.length, textBounds)
+
+        val backgroundBounds = RectF()
+        backgroundBounds.set(0f, 0f, layoutParams.height.toFloat(), layoutParams.height.toFloat())
+
+        val canvas = Canvas(background)
+
+        canvas.drawText(text!!, backgroundBounds.centerX(), backgroundBounds.centerY() - textBounds.exactCenterY(), textPaint)
+
+        return background
+    }
+
+
+    private fun getBackgroundAvatar(): Bitmap {
+        val background = Bitmap.createBitmap(layoutParams.height, layoutParams.height, Bitmap.Config.ARGB_8888)
+        val typedValue = TypedValue()
+
+        context.theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+
+        val canvas = Canvas(background)
+        canvas.drawColor(typedValue.data)
+
+        return background
+    }
+
     override fun onDraw(canvas: Canvas) {
-        bitmap = getBitmapFromDrawable() ?: return
+        if (!isModeAvatarText) {
+            bitmap = getBitmapFromDrawable() ?: return
+        }
 
         scaleBitmap()
         cropBitmap()
@@ -71,7 +143,7 @@ class CircleImageView @JvmOverloads constructor(
         canvas.drawBitmap(bitmap!!, 0F, 0F, null)
     }
 
-    private fun borderBitmap(){
+    private fun borderBitmap() {
         val borderStart = borderWidth / 2F
         val borderEnd = bitmap!!.width - borderWidth / 2F
 
@@ -92,7 +164,8 @@ class CircleImageView @JvmOverloads constructor(
                 (bitmap!!.height / coefScaling).toInt(),
                 false
             )
-        } else {}
+        } else {
+        }
 
     private fun cropBitmap() {
         val cropStartX = (bitmap!!.width - width) / 2
