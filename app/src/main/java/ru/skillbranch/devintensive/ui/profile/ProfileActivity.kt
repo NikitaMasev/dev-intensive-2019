@@ -4,6 +4,9 @@ import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -50,6 +53,12 @@ class ProfileActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
         viewModel.getProfileData().observe(this, Observer { updateUI(it) })
         viewModel.getTheme().observe(this, Observer { updateTheme(it) })
+        viewModel.getRepositoryError().observe(this, Observer { updateRepositoryState(it) })
+    }
+
+    private fun updateRepositoryState(isError: Boolean) {
+        wr_repository.isErrorEnabled = isError
+        if (isError) wr_repository.error = "Невалидный адрес репозитория"
     }
 
     private fun updateTheme(theme: Int) {
@@ -70,8 +79,8 @@ class ProfileActivity : AppCompatActivity() {
         val initials = Utils.toInitials(profile.firstName, profile.lastName)
 
         if (!initials.isNullOrEmpty()) {
-             iv_avatar.setText(initials)
-             iv_avatar.enableAvatarText()
+            iv_avatar.setText(initials)
+            iv_avatar.enableAvatarText()
         }
     }
 
@@ -91,7 +100,12 @@ class ProfileActivity : AppCompatActivity() {
         showCurrentMode(isEditMode)
 
         btn_edit.setOnClickListener {
-            if (isEditMode) saveProfileInfo()
+            if (viewModel.isRepositoryError())  {
+                et_repository.text.clear()
+            } else if (isEditMode) {
+                saveProfileInfo()
+            }
+
             isEditMode = !isEditMode
             showCurrentMode(isEditMode)
         }
@@ -99,6 +113,15 @@ class ProfileActivity : AppCompatActivity() {
         btn_switch_theme.setOnClickListener {
             viewModel.switchTheme()
         }
+
+        et_repository.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                viewModel.onTextRepositoryChanged(s.toString().trim())
+            }
+        })
+
     }
 
     private fun showCurrentMode(isEdit: Boolean) {
